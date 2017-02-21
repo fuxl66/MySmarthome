@@ -1,0 +1,218 @@
+﻿[enigma2]
+	[[dm7020hd]]
+		[[[e2ip]]]
+			type = str
+			enigma2_data_type@dm7020hd = e2ip
+			enigma2_page@dm7020hd = deviceinfo
+			visu_acl = ro
+		[[[e2enigmaversion]]]
+			type = str
+			enigma2_data_type@dm7020hd = e2enigmaversion
+			enigma2_page@dm7020hd = deviceinfo
+			visu_acl = ro
+		[[[e2imageversion]]]
+			type = str
+			enigma2_data_type@dm7020hd = e2imageversion
+			enigma2_page@dm7020hd = deviceinfo
+			visu_acl = ro
+		[[[e2webifversion]]]
+			type = str
+			enigma2_data_type@dm7020hd = e2webifversion
+			enigma2_page@dm7020hd = deviceinfo
+			visu_acl = ro
+		[[[e2model]]]
+			type = str
+			enigma2_data_type@dm7020hd = e2model
+			enigma2_page@dm7020hd = about
+			visu_acl = ro
+		[[[e2instandby]]]
+			type = bool
+			enigma2_data_type@dm7020hd = e2instandby
+			enigma2_page@dm7020hd = powerstate
+			visu_acl = ro
+		[[[current]]]
+			[[[[e2videowidth]]]]
+				type = str
+				enigma2_data_type@dm7020hd = e2videowidth
+				enigma2_page@dm7020hd = about
+				visu_acl = ro
+			[[[[e2videoheight]]]]
+				type = str
+				enigma2_data_type@dm7020hd = e2videoheight
+				enigma2_page@dm7020hd = about
+				visu_acl = ro
+			[[[[eventtitle]]]]
+				type = str
+				enigma2_data_type@dm7020hd = current_eventtitle
+				visu_acl = ro
+			[[[[currentvolume]]]]
+				type = num
+				enigma2_data_type@dm7020hd = current_volume
+				visu_acl = rw
+			[[[[servicename]]]]
+				type = str
+				enigma2_data_type@dm7020hd = e2servicename
+				enigma2_page@dm7020hd = subservices
+				visu_acl = ro
+			[[[[servicereference]]]]
+				type = str
+				enigma2_data_type@dm7020hd = e2servicereference
+				enigma2_page@dm7020hd = subservices
+				visu_acl = rw
+		[[[services]]]
+			[[[[DasErste_HD]]]]
+				type = bool
+				sref@dm7020hd = 1:0:19:283D:3FB:1:C00000:0:0:0:
+				enforce_updates = true
+				visu_acl = rw
+			[[[[ZDF_HD]]]]
+				type = bool
+				sref@dm7020hd = 1:0:19:2B66:3F3:1:C00000:0:0:0:
+				enforce_updates = true
+				visu_acl = rw
+			[[[[SERVUSTV]]]]
+				type = bool
+				sref@dm7020hd = 1:0:19:1332:3EF:1:C00000:0:0:0:
+				enforce_updates = true
+				visu_acl = rw
+		[[[remote]]] # see http://dream.reichholf.net/wiki/Enigma2:WebInterface#RemoteControl
+			[[[[TEXT]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 388
+				enforce_updates = true
+			[[[[RED]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 398
+				enforce_updates = true
+			[[[[GREEN]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 399
+				enforce_updates = true
+			[[[[YELLOW]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 400
+				enforce_updates = true
+			[[[[BLUE]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 401
+				enforce_updates = true
+			[[[[PAUSE]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 119
+				enforce_updates = true
+			[[[[STOP]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 128
+				enforce_updates = true
+			[[[[PLAY]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 207
+				enforce_updates = true
+			[[[[FF]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 159
+				enforce_updates = true
+			[[[[REWIND]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 168
+				enforce_updates = true
+			[[[[POWER]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 116
+				enforce_updates = true
+			[[[[OK]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 352
+				enforce_updates = true
+			[[[[EXIT]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 174
+				enforce_updates = true
+			[[[[INFO]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 352
+				enforce_updates = true
+			[[[[AUDIO]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 392
+				enforce_updates = true
+			[[[[VIDEO]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 393
+				enforce_updates = true
+			[[[[EPG]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 358
+				enforce_updates = true
+			[[[[MENU]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 139
+				enforce_updates = true
+			[[[[SUBTITLE]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 370
+				enforce_updates = true
+			[[[[UP]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 103
+				enforce_updates = true
+			[[[[DOWN]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 108
+				enforce_updates = true
+			[[[[LEFT]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 105
+				enforce_updates = true
+			[[[[RIGHT]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 106
+				enforce_updates = true
+			[[[[VolUP]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 115
+				enforce_updates = true
+			[[[[VolDOWN]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 114
+				enforce_updates = true
+			[[[[MUTE]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 113
+				enforce_updates = true
+			[[[[NEXT]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 407
+				enforce_updates = true
+			[[[[PREVIOUS]]]]
+				type = bool
+				visu_acl = rw
+				enigma2_remote_command_id@dm7020hd = 412
+				enforce_updates = true
