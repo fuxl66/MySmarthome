@@ -1,5 +1,5 @@
 #########################################################################
-#  Ported by toggle, 2014-2016
+#  Ported by toggle, 2014
 #########################################################################
 #  This software is based on the FHEM implementation
 #  https://github.com/mhop/fhem-mirror/blob/master/fhem/FHEM/00_THZ.pm
@@ -192,9 +192,7 @@ MsgTemplate = {
       'flowTempHC1':          [ 8, 2, decodeShort, 0.1],
       'heatSetTempHC1':       [10, 2, decodeShort, 0.1],
       'heatTempHC1':          [12, 2, decodeShort, 0.1],
-      'onHysteresisNo':       [14, 1, decodeByte, 1],
-      'offHysteresisNo':      [15, 1, decodeByte, 1],
-      'HCBoosterStage':       [16, 1, decodeByte, 1],
+      #'x32':              [14, 2, decodeShort, 1],
       #'seasonMode':        [17, 1, decodeShort, 1], # 1: winter, 2: summer
       #'x40':              [18, 2, decodeShort, 1],
       #'integralSwitch':    [20, 2, decodeShort, 1],
@@ -368,10 +366,8 @@ MsgTemplate = {
       'iconProgram':           [ 1, 0, decodeBit, 1],
       'iconCompressor':        [ 1, 1, decodeBit, 1],
       'iconHeating':           [ 1, 2, decodeBit, 1],
-      'iconCooling':           [ 1, 3, decodeBit, 1],
       'iconDHW':               [ 1, 4, decodeBit, 1],
       'iconBooster':           [ 1, 5, decodeBit, 1],
-      'iconService':           [ 1, 6, decodeBit, 1],
       'iconBothFilters':       [ 0, 0, decodeBit, 1],
       'iconVentilation':       [ 0, 1, decodeBit, 1],
       'iconCirculationPump':   [ 0, 2, decodeBit, 1],
@@ -689,12 +685,6 @@ MsgTemplate = {
       'p30integralComponent': [0, 2, decodeShort, 1,  10, 999]
       }
   },
-  'p32hystDHW': {
-    'cmd1': '0A0140', 'rw': 1,
-    'params': {
-      'p32hystDHW': [0, 2, decodeShort, 1,  0, 10]
-      }
-  },
   'p33BoosterTimeoutDHW': {
     'cmd1': '0A0588', 'rw': 1,
     'params': {
@@ -815,52 +805,16 @@ MsgTemplate = {
       'p57OutTempMinPumpCycles': [0, 2, decodeShort, 0.1, 0, 25]
       }
   },
-  'p76RoomThermCorrection': {
-    'cmd1': '0A0109', 'rw': 1,
+  'p99CoolingRtDay': {
+    'cmd1': '0A0569', 'rw': 1,
     'params': {
-      'p76RoomThermCorrection': [0, 2, decodeShort, 0.000390625, -5, 5]
+      'p99CoolingRtDay': [0, 2, decodeShort, 0.1, 10, 30]
       }
   },
-  'p77OutThermFilterTime': {
-    'cmd1': '0A010C', 'rw': 1,
+  'p99CoolingRtNight': {
+    'cmd1': '0A056B', 'rw': 1,
     'params': {
-      'p77OutThermFilterTime': [0, 2, decodeShort, 1, 1, 24]
-      }
-  },
-  'p35PasteurisationInterval': {
-    'cmd1': '0A0586', 'rw': 1,
-    'params': {
-      'p35PasteurisationInterval': [0, 2, decodeShort, 1, 1, 30]
-      }
-  },
-  'p35PasteurisationTemp': {
-    'cmd1': '0A0587', 'rw': 1,
-    'params': {
-      'p35PasteurisationTemp': [0, 2, decodeShort, 0.1, 10, 65]
-      }
-  },
-  'p34BoosterDHWTempAct': {
-    'cmd1': '0A0589', 'rw': 1,
-    'params': {
-      'p34BoosterDHWTempAct': [0, 2, decodeShort, 0.1, -10, 10]
-      }
-  },
-  'p99DHWmaxFlowTemp': {
-    'cmd1': '0A058C', 'rw': 1,
-    'params': {
-      'p99DHWmaxFlowTemp': [0, 2, decodeShort, 0.1, 10, 75]
-      }
-  },
-  'p89DHWeco': {
-    'cmd1': '0A058D', 'rw': 1,
-    'params': {
-      'p89DHWeco': [0, 2, decodeShort, 1, 0, 1]
-      }
-  },
-  'p99startUnschedVent': {
-    'cmd1': '0A05DD', 'rw': 1,
-    'params': {
-      'p99startUnschedVent': [0, 2, decodeShort, 1, 0, 3]
+      'p99CoolingRtNight': [0, 2, decodeShort, 0.1, 10, 30]
       }
   },
   'p99CoolingSwitch': {
@@ -869,36 +823,6 @@ MsgTemplate = {
       'p99CoolingSwitch': [0, 2, decodeShort, 1, 0, 1]
       }
   },
-  'pClockDay': {
-    'cmd1': '0A0122', 'rw': 1,
-    'params': {
-      'pClockDay': [0, 2, decodeShort, 1, 1, 31]
-      }
-  },
-  'pClockMonth': {
-    'cmd1': '0A0123', 'rw': 1,
-    'params': {
-      'pClockMonth': [0, 2, decodeShort, 1, 1, 12]
-      }
-  },
-  'pClockYear': {
-    'cmd1': '0A0124', 'rw': 1,
-    'params': {
-      'pClockYear': [0, 2, decodeShort, 1, 12, 20]
-      }
-  },
-  'pClockHour': {
-    'cmd1': '0A0125', 'rw': 1,
-    'params': {
-      'pClockHour': [0, 2, decodeShort, 1, 0, 23]
-      }
-  },
-  'pClockMinute': {
-    'cmd1': '0A0126', 'rw': 1,
-    'params': {
-      'pClockMinute': [0, 2, decodeShort, 1, 0, 59]
-      }
-  }
 }
 
 # Message deltas for other heat pumps
@@ -1050,27 +974,21 @@ class ThzProtocol:
     if len(data) < 5:
       return None
     data = bytearray(data)
-
-    if data[3] == 0x0a or data[3] == 0x0b or data[3] == 0x0c:
-      reg = '%02X%02X%02X'%(data[3],data[4],data[5])
-    else:
-      reg = '%02X'%(data[3])
-
     if data[0] == 0x15:
       self._rxNackCount += 1
-      logger.warning('NACK received (reg {})'.format(reg));
+      logger.warning('NACK received');
     elif data[0] == 0x01 and data[1] == 0x01:
       self._rxNackCount += 1
       logger.warning('NACK: Waiting for ACK');
     elif data[0] == 0x01 and data[1] == 0x02:
       self._rxNackCount += 1
-      logger.warning('NACK: Unknown command {}'.format(reg));
+      logger.warning('NACK: Unknown command');
     elif data[0] == 0x01 and data[1] == 0x03:
       self._rxNackCount += 1
       logger.warning('NACK: Invalid CRC');
     elif data[0] == 0x01 and data[1] == 0x04:
       self._rxNackCount += 1
-      logger.warning('NACK: Unknown register {}'.format(reg));
+      logger.warning('NACK: Unknown register');
     elif data[0] == 0x01 and data[1] == 0x00:
       # check the CRC
       crc = data[2]

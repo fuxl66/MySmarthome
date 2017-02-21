@@ -24,23 +24,11 @@ import time
 import sys
 import datetime
 from . import ThzProtocol
-import socket as socket
-from select import select
-import threading
 
 logger = logging.getLogger('THZ')
 
-specialRequests = ['logFullScan', 'logRegister', 'setRegiter']
-host = '0.0.0.0'
-port = 57483
-CLIENT_TIMEOUT = 60
-POLL_INTERVAL = 10
+specialRequests = ['logFullScan', 'logRegister']
 
-###############################################################################
-#
-# Class THZ implements main control instance
-#
-###############################################################################
 class THZ():
 
     def __init__(self, smarthome, serial_port='/dev/ttyUSB0', baudrate=115200, poll_period=300, min_update_period=86400, max_update_period=300):
@@ -52,9 +40,6 @@ class THZ():
         self._thzProtocol = ThzProtocol.ThzProtocol(serial_port, int(baudrate))
         self._msgList = {}
         self._logRegisterId = None
-        self._thzServer = ThzServer(self, host, port)
-        self._curData = {}
-        self._extMsgList = {}
 
 ###############################################################################
 #
@@ -65,9 +50,7 @@ class THZ():
 
     def _update_values(self):
         # request all messages
-        msgList = self._msgList.copy()
-        msgList.update(self._extMsgList)
-        newData = self._thzProtocol.requestData(msgList)
+        newData = self._thzProtocol.requestData(self._msgList)
 
         now = datetime.datetime.now()
 
@@ -114,11 +97,6 @@ class THZ():
                     for item in self._params[param]['item']:
                         item(newData[param], source='thzRefresh')
 
-        # provide the new data to the server instance
-        self._curData = newData.copy()
-        self._curData.update(stats)
-        self._thzServer.updateData(self._curData)
-
 ###############################################################################
 #
 # run() main function
@@ -130,7 +108,6 @@ class THZ():
             self._sh.scheduler.add('THZ', self._update_values,
                                prio=5, cycle=self._poll_period)
             self._update_values()
-            self._thzServer.start()
             logger.info("plugin started")
         except:
             logger.error(
@@ -157,17 +134,6 @@ class THZ():
         self._thzProtocol.logRegister(self._logRegisterId)
         self._params['logRegister']['item'][0]('done', source = 'thzRefresh')
         #logger.info('logRegister completed')
-
-###############################################################################
-#
-# _setRegister() requests writing the hex value to the specified register
-#
-###############################################################################
-    #def _setRegister(self):
-        #logger.info('logFullScan started')
-        #self._thzProtocol.sendRawSetRequest()
-        #self._params['logFullScan']['item'][0]('done', source = 'thzRefresh')
-        #logger.info('logFullScan completed')
 
 ###############################################################################
 #
@@ -275,123 +241,4 @@ class THZ():
               logger.error('thz: ### parse_item - {}'.format(sys.exc_info()))
  
         return None
-
-###############################################################################
-#
-# subscribe() implements a subscription mechanism for the ThzServer
-#
-###############################################################################
-    def subscribe(self, itemList):
-      self._extMsgList = {}
-      for item in itemList:
-        logger.debug( "subscribing to {0}".format(item))
-        msgName = None
-        try:
-          msgName = self._thzProtocol.getMsgFromParameter(item)
-          if msgName:
-              # a message parameter
-              # add the message name to the list
-              self._extMsgList[msgName] = 1
-        except:
-          logger.error('thz: ### parse_item - {}'.format(sys.exc_info()))
-
-      return self._curData
-
-###############################################################################
-#
-# Class ThzServer implements a UDP server.
-#
-###############################################################################
-class ThzServer(threading.Thread):
-  def __init__(self, thzDispatcher, host, port):
-    threading.Thread.__init__(self, name='thzServer')
-
-    self._thzDispatcher = thzDispatcher
-    self._clients = {}
-    logger.info("ThzServer initialized")
-
-    self._server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    self._server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    self._server.bind((host, port))
-    self._server.setblocking(0)
-
-
-  def updateClient(self, client, data):
-    try:
-      msg = ""
-      #logger.info("Updating client {0}".format(client))
-      for item in self._clients[client]['itemList']:
-        if item in data:
-          # append to the list
-          msg = msg + "{0}:{1};".format(item, data[item])
-      if len(msg) > 0:
-        #logger.info("Notify '{0}' sent to {1}".format(msg, client))
-        msg = 'notify ' + msg
-        self._server.sendto(msg.encode('ascii'), self._clients[client]['addr'])
-    except:
-      logger.error("Exception: {0}".format(sys.exc_info()))
-      pass
-
-  def updateData(self, data):
-      for client in self._clients.keys():
-        self.updateClient(client, data)
-
-  def run(self):
-    logger.info("ThzServer started")
-    while 1:
-
-      try:
-        now = datetime.datetime.now()
-        #print now
-        purgeList = []
-        for addr,client in self._clients.items():
-          if client['lastContact'] + datetime.timedelta(seconds=CLIENT_TIMEOUT) < now:
-            # client connection timed out
-            purgeList.append(addr)
-        for addr in purgeList:
-          #logger.info( "Removing client {0}".format(addr))
-          del self._clients[addr]
-
-        inputs = [self._server]
-        rready, wready, eready = select(inputs, [], [], POLL_INTERVAL)
-        if rready == []:
-          time.sleep(1)
-          continue
-
-        buf, remoteAddr  = self._server.recvfrom(10000)
-        #logger.info("Received *{0}* from {1}:{2}".format(buf, remoteAddr[0], remoteAddr[1]))
-
-        addr = "{0}:{1}".format(remoteAddr[0], remoteAddr[1])
-      except:
-        logger.error("Exception: {0}".format(sys.exc_info()))
-        continue
-
-      # parse the request
-      try:
-        try:
-          buf = buf.decode('ascii')
-          cmd, params = buf.split(' ')
-        except:
-          cmd = buf
-
-        if cmd == 'subscribe':
-          # update subscription
-          self._clients[addr] = { 'addr': remoteAddr, 'itemList': params.split(';') }
-
-          #logger.info("item list {0}".format(self._clients[addr]['itemList']))
-          data = self._thzDispatcher.subscribe(self._clients[addr]['itemList'])
-          self.updateClient(addr, data)
-          self._clients[addr]['lastContact'] = datetime.datetime.now()
-
-        elif cmd == 'set':
-          # set the parameters to the provided values
-          pass
-
-        elif cmd == 'alive':
-          # update the timestamp
-          #logger.info("alive from {0}".format(addr))
-          self._clients[addr]['lastContact'] = datetime.datetime.now()
-
-      except:
-        logger.error("Exception: {0}".format(sys.exc_info()))
 

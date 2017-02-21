@@ -176,7 +176,7 @@ class PortHandler(threading.Thread):
 
       # add header and trailer
       frm = STX + frm + DLE + ETX
-      logger.debug ('Tx: ' + ' '.join(format(x, '02x') for x in frm))
+      #logger.debug ('Tx: ' + ' '.join(format(x, '02x') for x in frm))
 
       # and finally send the message
       self._fd.write(frm)
